@@ -43,7 +43,7 @@ public class PuzzleInputFetcher {
     }
   }
 
-  private boolean isPuzzleAvailable(int year, int day) {
+  public boolean isPuzzleAvailable(int year, int day) {
     LocalDateTime now = LocalDateTime.now(ZoneId.of("America/New_York"));
     LocalDateTime puzzleReleaseTime = LocalDateTime.of(year, 12, day, 0, 0);
     return now.isAfter(puzzleReleaseTime);
