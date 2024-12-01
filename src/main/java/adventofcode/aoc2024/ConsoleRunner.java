@@ -37,6 +37,9 @@ public class ConsoleRunner implements CommandLineRunner {
           break;
         } else if (input > 0 && input <= 25) {
           day = input;
+          if (!puzzleManager.isPuzzleAvailable(year, day)) {
+            continue;
+          }
           AbstractPuzzleSolver solver = puzzleManager.getSolver(year, day);
           if (solver != null) {
             solver.solvePuzzle(day, year);
@@ -54,6 +57,9 @@ public class ConsoleRunner implements CommandLineRunner {
             } else {
               System.out.println("Jour invalide, veuillez réessayer (1-25) :");
             }
+          }
+          if (!puzzleManager.isPuzzleAvailable(year, day)) {
+            continue;
           }
           AbstractPuzzleSolver solver = puzzleManager.getSolver(year, day); // Obtenez le solveur
           if (solver != null) {

@@ -15,9 +15,11 @@ public class PuzzleManager {
 
   private static final String PACKAGE_NAME = "adventofcode.aoc2024.solvers";
   private final Map<String, AbstractPuzzleSolver> solvers = new HashMap<>();
+  private final PuzzleInputFetcher puzzleInputFetcher;
 
   public PuzzleManager(PuzzleInputFetcher puzzleInputFetcher) {
     registerSolvers(puzzleInputFetcher);
+    this.puzzleInputFetcher = puzzleInputFetcher;
   }
 
   private void registerSolvers(PuzzleInputFetcher puzzleInputFetcher) {
@@ -70,5 +72,13 @@ public class PuzzleManager {
   public AbstractPuzzleSolver getSolver(int year, int day) {
     String key = year + "-" + day;
     return solvers.get(key);
+  }
+
+  public boolean isPuzzleAvailable(int year, int day) {
+    boolean available = puzzleInputFetcher.isPuzzleAvailable(year, day);
+    if (!available) {
+      System.out.println("Année " + year + ", jour " + day + " : ce puzzle n'est pas encore disponible.");
+    }
+    return available;
   }
 }
