@@ -9,7 +9,7 @@ public class AdventOfCodeApplication {
   public static void main(String[] args) {
     SpringApplication.run(AdventOfCodeApplication.class, args);
 
-    System.out.println("Let's go !");
+    System.out.println("Bye !");
   }
 
 }
