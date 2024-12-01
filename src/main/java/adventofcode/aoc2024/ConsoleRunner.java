@@ -1,5 +1,6 @@
 package adventofcode.aoc2024;
 
+import adventofcode.aoc2024.common.AbstractPuzzleSolver;
 import java.time.LocalDateTime;
 import java.util.Scanner;
 import org.springframework.boot.CommandLineRunner;
@@ -9,11 +10,12 @@ import org.springframework.stereotype.Component;
 public class ConsoleRunner implements CommandLineRunner {
 
   private final Scanner scanner;
-  private final PuzzleSolver puzzleSolver;
+  private final PuzzleManager puzzleManager;
 
-  public ConsoleRunner(PuzzleSolver puzzleSolver) {
+  public ConsoleRunner(PuzzleManager puzzleManager) {
+    this.puzzleManager = puzzleManager;
     this.scanner = new Scanner(System.in);
-    this.puzzleSolver = puzzleSolver;
+
   }
 
   @Override
@@ -35,7 +37,12 @@ public class ConsoleRunner implements CommandLineRunner {
           break;
         } else if (input > 0 && input <= 25) {
           day = input;
-          puzzleSolver.solvePuzzle(day, year);
+          AbstractPuzzleSolver solver = puzzleManager.getSolver(year, day);
+          if (solver != null) {
+            solver.solvePuzzle(day, year);
+          } else {
+            System.out.println("Aucun solveur disponible pour le puzzle " + year + "-" + day);
+          }
         } else if (input >= 2015 && input <= maxYear) {
           year = input;
 
@@ -48,7 +55,12 @@ public class ConsoleRunner implements CommandLineRunner {
               System.out.println("Jour invalide, veuillez réessayer (1-25) :");
             }
           }
-          puzzleSolver.solvePuzzle(day, year);
+          AbstractPuzzleSolver solver = puzzleManager.getSolver(year, day); // Obtenez le solveur
+          if (solver != null) {
+            solver.solvePuzzle(day, year);
+          } else {
+            System.out.println("Aucun solveur disponible pour le puzzle " + year + "-" + day);
+          }
         } else {
           System.out.println("Entrée invalide, veuillez réessayer.");
         }

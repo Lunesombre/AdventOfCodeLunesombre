@@ -61,7 +61,6 @@ public class PuzzleInputFetcher {
   }
 
   private void saveInputToFile(String input, int year, int day) {
-    log.info("On est entré dans saveInputToFile");
     if (input == null) {
       log.error("L'input est nul, impossible de sauvegarder.");
       return;
@@ -109,7 +108,6 @@ public class PuzzleInputFetcher {
 
 
   private String readInputFromFile(String filePath) {
-    log.info("On est entré dans readInputFromFile");
     try {
       return new String(Files.readAllBytes(Paths.get(filePath)));
     } catch (IOException e) {
