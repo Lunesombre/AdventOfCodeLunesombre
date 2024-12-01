@@ -17,6 +17,9 @@ import org.springframework.stereotype.Component;
 @PuzzleSolverClass("2024-1")
 public class PuzzleSolver2024Day1 extends AbstractPuzzleSolver {
 
+  private List<Integer> leftList;
+  private List<Integer> rightList;
+
   public PuzzleSolver2024Day1(PuzzleInputFetcher puzzleInputFetcher) {
     super(puzzleInputFetcher);
   }
@@ -25,14 +28,25 @@ public class PuzzleSolver2024Day1 extends AbstractPuzzleSolver {
   protected void solveSpecificPuzzle(String input) {
     Map<Integer, Integer> parsedInput = inputParser(input);
     int sum = 0;
+    long sumPartTwo = 0;
 
+    // resolves part 1
     for (Map.Entry<Integer, Integer> entry : parsedInput.entrySet()) {
       log.debug("Clé: {}, Valeur: {}", entry.getKey(), entry.getValue());
       int absoluteDistance = Math.abs(entry.getKey() - entry.getValue());
       log.debug("Absolute distance :{}", absoluteDistance);
       sum += absoluteDistance;
     }
-    log.warn("La réponse est: {}", sum);
+    log.warn("La réponse à la partie 1 est: {}", sum);
+
+    // resolves part 2
+    for (Integer elementOfLeftList : leftList) {
+      long count = rightList.stream()
+          .filter(elementOfRightList -> elementOfRightList.equals(elementOfLeftList)) // Utilisez equals pour comparer
+          .count();
+      sumPartTwo += (count * elementOfLeftList);
+    }
+    log.warn("La réponse à la partie 2 est: {}", sumPartTwo);
 
   }
 
@@ -40,23 +54,23 @@ public class PuzzleSolver2024Day1 extends AbstractPuzzleSolver {
   private Map<Integer, Integer> inputParser(String input) {
     String[] splitInput = input.trim().split("\\s+"); //splits on one or several spaces
     Map<Integer, Integer> parsedInput = new LinkedHashMap<>();
-    List<Integer> keys = new ArrayList<>(splitInput.length / 2);
-    List<Integer> values = new ArrayList<>(splitInput.length / 2);
+    leftList = new ArrayList<>(splitInput.length / 2);
+    rightList = new ArrayList<>(splitInput.length / 2);
 
     for (int i = 0; i < splitInput.length; i++) {
       if (i % 2 == 0) {
-        keys.add(Integer.valueOf(splitInput[i]));
+        leftList.add(Integer.valueOf(splitInput[i]));
       } else {
-        values.add(Integer.valueOf(splitInput[i]));
+        rightList.add(Integer.valueOf(splitInput[i]));
       }
     }
-    if (keys.size() != values.size()) {
+    if (leftList.size() != rightList.size()) {
       throw new IllegalArgumentException("Uneven number of elements in the splitInput array");
     }
-    keys.sort(Comparator.naturalOrder());
-    values.sort(Comparator.naturalOrder());
-    for (int i = 0; i < keys.size(); i++) {
-      parsedInput.put(keys.get(i), values.get(i));
+    leftList.sort(Comparator.naturalOrder());
+    rightList.sort(Comparator.naturalOrder());
+    for (int i = 0; i < leftList.size(); i++) {
+      parsedInput.put(leftList.get(i), rightList.get(i));
     }
     return parsedInput;
   }
