@@ -1,5 +1,7 @@
 package adventofcode.aoc2024.solvers;
 
+import static adventofcode.aoc2024.common.util.Utils.inputToCharMatrixParser;
+
 import adventofcode.aoc2024.PuzzleInputFetcher;
 import adventofcode.aoc2024.common.AbstractPuzzleSolver;
 import adventofcode.aoc2024.common.PuzzleSolverClass;
@@ -29,7 +31,7 @@ public class PuzzleSolver2024Day6 extends AbstractPuzzleSolver {
   protected void solveSpecificPuzzle(String input) {
     List<GuardPosition> guardPositions = new ArrayList<>();
     Set<String> distinctPositionsVisited = new HashSet<>();
-    char[][] map = inputParser(input);
+    char[][] map = inputToCharMatrixParser(input);
 
     // PART I
     GuardPosition initialGuardPosition = getInitialGuardCoordinates(map);
@@ -150,18 +152,6 @@ public class PuzzleSolver2024Day6 extends AbstractPuzzleSolver {
         .anyMatch(pos -> pos.getX() == currentPosition.getX()
             && pos.getY() == currentPosition.getY()
             && pos.getOrientation() == currentPosition.getOrientation());
-  }
-
-  private char[][] inputParser(String input) {
-    String[] splitInput = input.trim().split("\\R");
-    char[][] map = new char[splitInput.length][splitInput[0].length()];
-    for (int i = 0; i < splitInput.length; i++) {
-      for (int j = 0; j < splitInput[i].length(); j++) {
-        map[i][j] = splitInput[i].charAt(j);
-      }
-    }
-
-    return map;
   }
 
   private void displayMap(char[][] map) {
