@@ -13,5 +13,6 @@ I made a small "in console" app in Java/SpringBoot so I can choose a year and da
   - day 3 : solved #regex 😣
   - day 4 : solved 🤗
   - day 5 : solved 🥵
-  - day 6 : solved. 💀 Part 2 very slow though.
+  - day 6 : solved 💀 Part 2 very slow though.
   - day 7 : solved 🤩
+  - day 8 : solved 🙂‍↕️
