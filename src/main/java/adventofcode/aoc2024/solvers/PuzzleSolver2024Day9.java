@@ -22,6 +22,7 @@ public class PuzzleSolver2024Day9 extends AbstractPuzzleSolver {
 
   @Override
   protected void solveSpecificPuzzle(String input) {
+    // PART I
     List<String> inputAsListOfString = new ArrayList<>();
     int id = 0;
     for (int i = 0; i < input.length(); i++) {
@@ -73,6 +74,33 @@ public class PuzzleSolver2024Day9 extends AbstractPuzzleSolver {
       resultPartI += (long) i * sortedList.get(i);
     }
     log.warn("Résultat 2024-9 partie 1 : le fileSystem checksum est : {}", resultPartI);
+
+    // PART 2
+    partTwo(input);
   }
 
+  private void partTwo(String input) {
+
+    List<Integer> sortedListPartTwo = new ArrayList<>();
+
+    List<FileBlock<String, Integer>> inputAsFileBlocks = new ArrayList<>();
+    int id = 0;
+    for (int i = 0; i < input.length(); i++) {
+      char charAtI = input.charAt(i);
+      int intAtI = Character.getNumericValue(charAtI);
+      if (i % 2 == 0) {
+        inputAsFileBlocks.add(new FileBlock<>(String.valueOf(id), intAtI));
+        id++;
+      } else if (intAtI != 0) {
+        inputAsFileBlocks.add(new FileBlock<>(".", intAtI));
+      }
+    }
+//    for (int i = 0; i < 100; i++) {
+//      System.out.println(inputAsFileBlocks.get(i));
+//    }
+  }
+
+  private record FileBlock<X, Y>(X value, Y size) {
+
+  }
 }
