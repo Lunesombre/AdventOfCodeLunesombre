@@ -1,5 +1,7 @@
 package adventofcode.aoc2024.solvers;
 
+import static java.lang.Long.parseLong;
+
 import adventofcode.aoc2024.PuzzleInputFetcher;
 import adventofcode.aoc2024.common.AbstractPuzzleSolver;
 import adventofcode.aoc2024.common.PuzzleSolverClass;
@@ -8,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -81,26 +84,85 @@ public class PuzzleSolver2024Day9 extends AbstractPuzzleSolver {
 
   private void partTwo(String input) {
 
-    List<Integer> sortedListPartTwo = new ArrayList<>();
+    // Et si on le faisait directement sur l'input de base ?
+    List<String> sortedListPartTwo = new ArrayList<>();
+    List<Integer> sizesOfSpaces = new ArrayList<>(input.length() / 2 + 1); // list initial size to contain values of uneven indices,
+    // +1 is there in case the input.length() is uneven.
 
-    List<FileBlock<String, Integer>> inputAsFileBlocks = new ArrayList<>();
+    // pour chaque chiffre à chaque index de la String input,
+    // si c'est un impair, stocke le bon nombre de "." ✅
+    //  dans une autre liste enregistre ce chiffre ✅
+    // si c'est un pair, regarde s'il y a un chiffre supérieur ou égal dans la liste de chiffre, si oui :
+    // supprime remplace le chiffre de la liste par la différence entre le chiffre de la liste et la valeur du character de la String input
+    // trouve la première occurrence de répétition de "." avec le bon chiffre, et remplace le nombre correspondant de points par l'ID
+    // si non : ajoute le bon de nombre de répétitions d'id
+
+    // TODO: NOOOOOOOOOOOOOOOOOOOO IT STARTS FROM THE END OF THE STRING: need at least two steps
     int id = 0;
     for (int i = 0; i < input.length(); i++) {
       char charAtI = input.charAt(i);
       int intAtI = Character.getNumericValue(charAtI);
       if (i % 2 == 0) {
-        inputAsFileBlocks.add(new FileBlock<>(String.valueOf(id), intAtI));
+//        int space = sizesOfSpaces.stream()
+//            .filter(n ->n == charAtI)
+//            .findFirst().orElse(-1);
+        int index = IntStream.range(0, sizesOfSpaces.size())
+            .filter(n -> sizesOfSpaces.get(n) >= intAtI)
+            .findFirst()
+            .orElse(-1);
+        if (index != -1) {
+          int difference = sizesOfSpaces.get(index) - intAtI;
+          if (difference == 0) {
+            sizesOfSpaces.remove(index); // I'm done looping from sizesOfSpaces there so should be ok if mono-threaded
+          } else {
+            sizesOfSpaces.set(index, difference);
+          }
+          replaceConsecutiveDots(sortedListPartTwo, intAtI, String.valueOf(id));
+
+        } else {
+          for (int j = 0; j < intAtI; j++) {
+            sortedListPartTwo.add(String.valueOf(id));
+          }
+        }
         id++;
-      } else if (intAtI != 0) {
-        inputAsFileBlocks.add(new FileBlock<>(".", intAtI));
+      } else {
+        for (int j = 0; j < intAtI; j++) {
+          sortedListPartTwo.add(".");
+          sizesOfSpaces.add(intAtI);
+        }
       }
     }
-//    for (int i = 0; i < 100; i++) {
-//      System.out.println(inputAsFileBlocks.get(i));
-//    }
+
+    // Maintenant j'ai une liste de String "ordonnée" et je n'ai plus qu'à boucler dedans
+    long newCheckSum = 0;
+    for (int i = 0; i < sortedListPartTwo.size(); i++) {
+      if (!sortedListPartTwo.get(i).equals(".")) {
+        newCheckSum += parseLong(sortedListPartTwo.get(i)) * i;
+      }
+    }
+    log.warn("Résultat 2024-9 partie 2 : le fileSystem checksum est : {}", newCheckSum);
+
+
   }
 
-  private record FileBlock<X, Y>(X value, Y size) {
+  public void replaceConsecutiveDots(List<String> elements, int n, String replacement) {
+    int currentCount = 0; // Compteur pour les "." consécutifs
 
+    for (int i = 0; i < elements.size(); i++) {
+      if (elements.get(i).equals(".")) {
+        currentCount++; // Incrémente le compteur si l'élément est "."
+
+        // Si on a trouvé au moins n "." consécutifs
+        if (currentCount == n) {
+          // Remplacer les n premiers "." par le caractère de remplacement
+          for (int j = 0; j < n; j++) {
+            elements.set(i - j, replacement); // Remplace le "." par le caractère de remplacement
+          }
+          break; // On sort de la boucle après le remplacement
+        }
+      } else {
+        currentCount = 0; // Réinitialiser le compteur si l'élément n'est pas "."
+      }
+    }
   }
 }
